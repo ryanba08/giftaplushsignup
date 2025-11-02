@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Heart,
   Sparkles,
@@ -18,6 +18,13 @@ export default function LandingPage() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [count, setCount] = useState<number | null>(null);
+  useEffect(() => {
+    fetch("/api/count")
+      .then((res) => res.json())
+      .then((data) => data.ok && setCount(data.count))
+      .catch(() => setCount(209));
+  }, []);
 
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -30,7 +37,7 @@ export default function LandingPage() {
         (form.querySelector('input[name="hp"]') as HTMLInputElement)?.value ||
         "";
 
-      const res = await fetch("/api", {
+      const res = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, hp }),
@@ -38,6 +45,7 @@ export default function LandingPage() {
 
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error || "Failed");
+      await fetch("api/count", { method: "POST" });
 
       setSubmitted(true);
       setEmail("");
@@ -132,7 +140,6 @@ export default function LandingPage() {
               The sweetest way to show you care. Send a cuddly companion to
               friends and loved ones — delivered with love and a personal touch.
             </p>
-
             {/* Mailchimp submit */}
             {!submitted ? (
               <form className="max-w-md mx-auto mb-8" onSubmit={handleSignup}>
@@ -145,7 +152,7 @@ export default function LandingPage() {
                   autoComplete="off"
                 />
 
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex flex-col sm:flex-row gap-3 items-stretch">
                   <input
                     type="email"
                     name="email"
@@ -153,7 +160,7 @@ export default function LandingPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="Enter your email"
-                    className="flex-1 h-14 px-6 text-lg border-2 border-purple-200 focus:border-purple-400
+                    className="sm:flex-1 h-14 px-6 text-lg border-2 border-purple-200 focus:border-purple-400
                  placeholder:text-gray-700 text-gray-700 rounded-full outline-none"
                   />
                   <button
@@ -183,7 +190,8 @@ export default function LandingPage() {
             )}
 
             <p className="text-sm text-gray-500 mb-12">
-              🎉 Join 209 others waiting for launch
+              🎉 Join {typeof count === "number" ? count : "…"} others waiting
+              for launch
             </p>
 
             {/* Hero Image */}
@@ -276,12 +284,14 @@ export default function LandingPage() {
                   <div className="hidden md:block absolute top-16 left-[60%] w-[80%] h-1 bg-linear-to-r from-purple-300 to-pink-300" />
                 )}
                 <div className="relative bg-white rounded-3xl p-8 shadow-lg border-2 border-purple-100 hover:border-purple-300 transition-all">
-                  <div className="w-16 h-16 bg-linear-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
-                    <span className="text-3xl font-bold text-white">
-                      {s.number}
-                    </span>
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-16 h-16 bg-linear-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
+                      <span className="text-3xl font-bold text-white">
+                        {s.number}
+                      </span>
+                    </div>
+                    <s.icon className="w-12 h-12 text-purple-400" />
                   </div>
-                  <s.icon className="w-12 h-12 text-purple-400 mb-4" />
                   <h3 className="text-2xl font-bold text-gray-900 mb-3">
                     {s.title}
                   </h3>
@@ -305,7 +315,7 @@ export default function LandingPage() {
             <span className="text-2xl font-bold text-gray-900">GiftAPlush</span>
           </div>
           <p className="text-gray-600 mb-6">
-            Spreading love, one stuffed animal at a time 💕
+            Spreading love, one plush at a time 💕
           </p>
           <p className="text-sm text-gray-500">
             © {new Date().getFullYear()} GiftAPlush

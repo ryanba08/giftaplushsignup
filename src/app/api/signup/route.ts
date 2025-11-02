@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+
 export async function POST(req: Request) {
     try {
         const { email, hp }: { email?: string; hp?: string } = await req.json();
@@ -34,6 +35,7 @@ export async function POST(req: Request) {
 
         // Treat "Member Exists" as success for UX
         if (!res.ok && data?.title !== "Member Exists") {
+            await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/count`, { method: "POST" });
             return NextResponse.json({ ok: false, error: data?.detail || "Mailchimp error" }, { status: 400 });
         }
 
