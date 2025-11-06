@@ -58,7 +58,20 @@ export default function LandingPage() {
 
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error || "Failed");
-      await fetch("/api/count", { method: "POST" });
+
+      // increment the persisted counter and reflect it in UI right away
+      const incRes = await fetch("/api/count", {
+        method: "POST",
+        cache: "no-store",
+      });
+      const incJson = await incRes.json();
+
+      if (incJson?.ok && typeof incJson.count === "number") {
+        setCount(incJson.count);
+      } else {
+        // fallback: optimistic bump
+        setCount((prev) => (typeof prev === "number" ? prev + 1 : 209));
+      }
 
       setSubmitted(true);
       setEmail("");

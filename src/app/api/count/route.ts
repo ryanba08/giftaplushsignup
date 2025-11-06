@@ -26,6 +26,7 @@ async function readCount() {
         const raw = await store.get("signupCount"); // ArrayBuffer | null
         if (!raw) return DEFAULT;
         const val = new TextDecoder().decode(raw);
+        console.log(val);
         const n = parseInt(val, 10);
         return Number.isFinite(n) ? n : DEFAULT;
     } catch {
