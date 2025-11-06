@@ -58,7 +58,7 @@ export default function LandingPage() {
 
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error || "Failed");
-      await fetch("api/count", { method: "POST" });
+      await fetch("/api/count", { method: "POST" });
 
       setSubmitted(true);
       setEmail("");
