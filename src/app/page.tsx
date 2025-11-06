@@ -20,10 +20,23 @@ export default function LandingPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [count, setCount] = useState<number | null>(null);
   useEffect(() => {
-    fetch("/api/count")
-      .then((res) => res.json())
-      .then((data) => data.ok && setCount(data.count))
-      .catch(() => setCount(209));
+    const fetchCount = async () => {
+      try {
+        const res = await fetch("/api/count", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to load count");
+
+        const data = await res.json();
+        if (data.ok && typeof data.count === "number") {
+          setCount(data.count);
+        } else {
+          setCount(209);
+        }
+      } catch {
+        setCount(209);
+      }
+    };
+
+    fetchCount();
   }, []);
 
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
