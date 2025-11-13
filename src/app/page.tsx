@@ -274,7 +274,7 @@ export default function LandingPage() {
             {features.map((f, i) => (
               <div
                 key={i}
-                className="border-2 border-gray-100 hover:border-purple-200 transition-all hover:shadow-xl hover:-translate-y-2 bg-white/80 backdrop-blur rounded-2xl p-6"
+                className="border-2 border-gray-100 hover:border-purple-200 transition-transform hover:shadow-xl hover:-translate-y-2 bg-white/80 backdrop-blur rounded-2xl p-6"
               >
                 <div
                   className={`w-16 h-16 bg-linear-to-br ${f.gradient} rounded-2xl flex items-center justify-center mb-4`}
