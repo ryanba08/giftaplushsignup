@@ -130,7 +130,7 @@ export default function LandingPage() {
     {
       number: "3",
       title: "Send Love",
-      description: "We'll deliver it right to their door with care",
+      description: "We will deliver it right to their door with care",
       icon: Send,
     },
   ];
